@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Populate the table with results
         let totalTime = 0;
-        results.forEach((result) => {
+        results.forEach((result, index) => {
             totalTime += parseFloat(result.time);
             const row = table.insertRow();
             const cell1 = row.insertCell(0);
@@ -48,3 +48,4 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('An error occurred:', error);
     });
 });
+    
