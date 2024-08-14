@@ -1,51 +1,40 @@
-document.addEventListener('DOMContentLoaded', function() {
-    function getRandomTime(min, max) {
-        return Math.random() * (max - min) + min;
-    }
+document.addEventListener('DOMContentLoaded', () => {
+    const getRandomTime = (min, max) => Math.random() * (max - min) + min;
 
-    function createPromise(index) {
-        const time = getRandomTime(1, 3).toFixed(3); // Random time in seconds with 3 decimal places
+    const createPromise = (index) => {
+        const time = getRandomTime(1, 3).toFixed(3);
         return new Promise((resolve) => {
             setTimeout(() => {
                 resolve({ promise: `Promise ${index + 1}`, time: time });
-            }, time * 1000); // Convert seconds to milliseconds
+            }, time * 1000);
         });
-    }
+    };
 
-    // Create 3 promises
     const promises = [createPromise(0), createPromise(1), createPromise(2)];
-
-    // Store the start time
     const startTime = performance.now();
-
-    // Get the table element
     const table = document.getElementById('resultTable');
 
-    // Wait for all promises to resolve
-    Promise.all(promises).then((results) => {
-        // Remove the loading row
-        table.innerHTML = '';
+    Promise.all(promises)
+        .then((results) => {
+            table.innerHTML = '';
+            let totalTime = 0;
+            results.forEach((result) => {
+                totalTime += parseFloat(result.time);
+                const row = table.insertRow();
+                const cell1 = row.insertCell(0);
+                const cell2 = row.insertCell(1);
+                cell1.textContent = result.promise;
+                cell2.textContent = `${result.time} seconds`;
+            });
 
-        // Populate the table with results
-        let totalTime = 0;
-        results.forEach((result, index) => {
-            totalTime += parseFloat(result.time);
+            const endTime = (performance.now() - startTime) / 1000;
             const row = table.insertRow();
             const cell1 = row.insertCell(0);
             const cell2 = row.insertCell(1);
-            cell1.textContent = result.promise;
-            cell2.textContent = `${result.time} seconds`;
+            cell1.textContent = 'Total';
+            cell2.textContent = `${endTime.toFixed(3)} seconds`;
+        })
+        .catch((error) => {
+            console.error('An error occurred:', error);
         });
-
-        // Calculate the total time taken
-        const endTime = (performance.now() - startTime) / 1000; // Convert ms to seconds
-        const row = table.insertRow();
-        const cell1 = row.insertCell(0);
-        const cell2 = row.insertCell(1);
-        cell1.textContent = 'Total';
-        cell2.textContent = `${endTime.toFixed(3)} seconds`;
-    }).catch((error) => {
-        console.error('An error occurred:', error);
-    });
 });
-    
